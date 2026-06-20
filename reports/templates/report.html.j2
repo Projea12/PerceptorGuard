@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PerceptorGuard — {{ model_name }} — {{ date }}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;font-size:14px;line-height:1.6}
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+h1{font-size:1.6rem;font-weight:700;color:#f8fafc;margin-bottom:4px}
+h2{font-size:1.1rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin:28px 0 12px}
+h3{font-size:0.95rem;font-weight:600;color:#cbd5e1;margin:16px 0 8px}
+.subtitle{color:#64748b;font-size:0.85rem;margin-bottom:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px}
+.metric-val{font-size:2rem;font-weight:700;color:#f8fafc}
+.metric-lbl{font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.metric-sub{font-size:0.8rem;color:#94a3b8;margin-top:4px}
+.gate-pass{background:#14532d;border-color:#16a34a;color:#bbf7d0}
+.gate-fail{background:#450a0a;border-color:#dc2626;color:#fecaca}
+.gate-banner{border-radius:8px;padding:16px 20px;margin-bottom:24px;border-width:2px;border-style:solid}
+.gate-title{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.gate-row{font-family:monospace;font-size:0.82rem;margin:2px 0;color:#fca5a5}
+table{width:100%;border-collapse:collapse;font-size:0.82rem}
+th{background:#0f172a;color:#64748b;text-transform:uppercase;font-size:0.72rem;letter-spacing:.05em;padding:8px 10px;text-align:right;border-bottom:1px solid #334155}
+th:first-child{text-align:left}
+td{padding:7px 10px;border-bottom:1px solid #1e293b;text-align:right;font-variant-numeric:tabular-nums}
+td:first-child{text-align:left;color:#e2e8f0;font-weight:500}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#1e293b}
+.rc-zero{color:#64748b}
+.rc-low{color:#fb923c}
+.rc-mid{color:#fbbf24}
+.rc-good{color:#4ade80}
+.tier-easy{display:inline-block;padding:1px 6px;border-radius:3px;background:#1e3a5f;color:#93c5fd;font-size:0.75rem}
+.tier-hard{display:inline-block;padding:1px 6px;border-radius:3px;background:#3b1f6e;color:#c4b5fd;font-size:0.75rem}
+.bar-wrap{display:flex;align-items:center;gap:8px}
+.bar-bg{flex:1;height:6px;background:#1e293b;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.bar-good{background:#22c55e}
+.bar-mid{background:#f59e0b}
+.bar-low{background:#f97316}
+.bar-zero{background:#334155;width:2px}
+.fm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:8px}
+.fm-card{background:#1e293b;border:1px solid #334155;border-radius:6px;padding:12px}
+.fm-count{font-size:1.6rem;font-weight:700;color:#f8fafc}
+.fm-pct{font-size:0.85rem;color:#64748b}
+.fm-label{font-size:0.8rem;color:#94a3b8;margin-top:2px}
+.fm-miss{border-left:3px solid #ef4444}
+.fm-fp{border-left:3px solid #f97316}
+.fm-loc{border-left:3px solid #eab308}
+.fm-cls{border-left:3px solid #8b5cf6}
+.img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.img-card{background:#1e293b;border:1px solid #334155;border-radius:8px;overflow:hidden}
+.img-card img{width:100%;display:block}
+.img-caption{padding:10px 12px;font-size:0.8rem;color:#94a3b8}
+.img-caption strong{color:#e2e8f0}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid #1e293b;color:#475569;font-size:0.78rem;display:flex;justify-content:space-between}
+code{font-family:monospace;background:#0f172a;padding:2px 5px;border-radius:3px;font-size:0.85em}
+.delta-neg{color:#f87171}
+.delta-pos{color:#4ade80}
+.delta-neu{color:#94a3b8}
+details summary{cursor:pointer;color:#94a3b8;font-size:0.85rem;padding:6px 0;user-select:none}
+details summary:hover{color:#cbd5e1}
+details[open] summary{color:#e2e8f0}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<h1>PerceptorGuard Eval Report</h1>
+<p class="subtitle">
+  model: <code>{{ model_name }}</code> &nbsp;|&nbsp;
+  IoU threshold: <code>{{ iou_threshold }}</code> &nbsp;|&nbsp;
+  op-point conf ≥ <code>{{ op_conf }}</code> &nbsp;|&nbsp;
+  {{ n_scenes }} scenes &nbsp;|&nbsp; {{ n_gt }} GT objects &nbsp;|&nbsp;
+  {{ date }}
+</p>
+
+<!-- ── Gate banner ─────────────────────────────────────────────────────────── -->
+{% if gate_results is not none %}
+<div class="gate-banner {{ 'gate-pass' if gate_passed else 'gate-fail' }}">
+  <div class="gate-title">
+    {% if gate_passed %}✓ Regression Gate PASSED — all {{ gate_results|length }} checks within threshold{% else %}✗ Regression Gate FAILED — {{ gate_failures|length }} regression(s) detected{% endif %}
+  </div>
+  {% for r in gate_failures %}
+  <div class="gate-row">
+    ✗ {{ r.slice_name }} / {{ r.metric }}: baseline={{ "%.4f"|format(r.baseline) }}
+    current={{ "%.4f"|format(r.current) }}  delta={{ "%+.4f"|format(r.delta) }}
+    (floor {{ "%.4f"|format(r.floor) }})
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── Overall metrics ─────────────────────────────────────────────────────── -->
+<h2>Overall Metrics</h2>
+<div class="grid3">
+  <div class="card">
+    <div class="metric-val">{{ "%.1f%%"|format(overall.map * 100) }}</div>
+    <div class="metric-lbl">mAP @ IoU={{ iou_threshold }}</div>
+    <div class="metric-sub">mean across {{ n_classes }} classes</div>
+  </div>
+  <div class="card">
+    <div class="metric-val">{{ pct(overall.recall) }}</div>
+    <div class="metric-lbl">Recall (op-point)</div>
+    <div class="metric-sub">conf ≥ {{ op_conf }}</div>
+  </div>
+  <div class="card">
+    <div class="metric-val" style="font-size:1.4rem">
+      TP={{ overall.tp|int }} &nbsp; FP={{ overall.fp|int }} &nbsp; FN={{ overall.fn|int }}
+    </div>
+    <div class="metric-lbl">Confusion counts</div>
+    <div class="metric-sub">precision: {{ pct(overall.precision) }}</div>
+  </div>
+</div>
+
+<!-- ── Failure mode summary ─────────────────────────────────────────────────── -->
+{% if failure_modes %}
+<h2>Failure Mode Breakdown</h2>
+<div class="fm-grid">
+  {% for mode, cnt, pct_val in failure_modes %}
+  <div class="fm-card fm-{{ mode.replace('_', '-').split('-')[0] }}">
+    <div class="fm-count">{{ cnt }}</div>
+    <div class="fm-pct">{{ "%.1f%%"|format(pct_val * 100) }} of failures</div>
+    <div class="fm-label">{{ mode }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── By tier ─────────────────────────────────────────────────────────────── -->
+{% if tier_table is not none %}
+<h2>By Object Tier</h2>
+<div class="card" style="margin-bottom:16px">
+<table>
+<thead><tr>
+  <th>Tier</th><th>Recall</th><th>Precision</th><th>F1</th>
+  <th>TP</th><th>FP</th><th>FN</th><th style="min-width:120px">Recall bar</th>
+</tr></thead>
+<tbody>
+{% for tier, row in tier_table.iterrows() %}
+<tr>
+  <td>{% if tier == 'easy' %}<span class="tier-easy">easy (COCO)</span>{% else %}<span class="tier-hard">hard (off-vocab)</span>{% endif %}</td>
+  <td class="{{ rc_class(row.recall) }}">{{ pct(row.recall) }}</td>
+  <td class="{{ rc_class(row.precision) }}">{{ pct(row.precision) }}</td>
+  <td class="{{ rc_class(row.f1) }}">{{ pct(row.f1) }}</td>
+  <td>{{ row.tp|int }}</td><td>{{ row.fp|int }}</td><td>{{ row.fn|int }}</td>
+  <td>{{ bar(row.recall) }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endif %}
+
+<!-- ── By profile ──────────────────────────────────────────────────────────── -->
+{% if profile_table is not none %}
+<h2>By Challenge Profile</h2>
+<div class="card" style="margin-bottom:16px">
+<table>
+<thead><tr>
+  <th>Profile</th><th>Recall</th><th>F1</th>
+  <th>TP</th><th>FP</th><th>FN</th>
+  <th>Δ recall vs baseline</th><th style="min-width:120px">Bar</th>
+</tr></thead>
+<tbody>
+{% for prof, row in profile_table.iterrows() %}
+<tr>
+  <td>{{ prof }}</td>
+  <td class="{{ rc_class(row.recall) }}">{{ pct(row.recall) }}</td>
+  <td class="{{ rc_class(row.f1) }}">{{ pct(row.f1) }}</td>
+  <td>{{ row.tp|int }}</td><td>{{ row.fp|int }}</td><td>{{ row.fn|int }}</td>
+  <td>{{ delta_vs_baseline(row.recall, baseline_recall) }}</td>
+  <td>{{ bar(row.recall) }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endif %}
+
+<!-- ── By class ─────────────────────────────────────────────────────────────── -->
+{% if class_table is not none %}
+<h2>Per-Class AP</h2>
+<div class="card" style="margin-bottom:16px">
+<table>
+<thead><tr>
+  <th>Class</th><th>Tier</th><th>AP @ IoU={{ iou_threshold }}</th>
+  <th>Recall</th><th>TP</th><th>FP</th><th>FN</th>
+  <th style="min-width:120px">AP bar</th>
+</tr></thead>
+<tbody>
+{% for cls, row in class_table.iterrows() %}
+<tr>
+  <td>{{ cls }}</td>
+  <td>{% if row.get('tier','?') == 'easy' %}<span class="tier-easy">easy</span>{% else %}<span class="tier-hard">hard</span>{% endif %}</td>
+  <td class="{{ rc_class(row.ap) }}">{{ pct(row.ap) }}</td>
+  <td class="{{ rc_class(row.recall) }}">{{ pct(row.recall) }}</td>
+  <td>{{ row.tp|int }}</td><td>{{ row.fp|int }}</td><td>{{ row.fn|int }}</td>
+  <td>{{ bar(row.ap) }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endif %}
+
+<!-- ── Slices (collapsible) ─────────────────────────────────────────────────── -->
+<h2>Slice Breakdowns</h2>
+
+{% for table_name, label, col_name in [
+    ('distance_table', 'Camera Distance', 'distance'),
+    ('lighting_table', 'Ambient Lighting', 'lighting'),
+    ('clutter_table', 'Object Density', 'clutter')
+] %}
+{% if tables[table_name] is not none %}
+<details {% if loop.first %}open{% endif %}>
+<summary><strong>{{ label }}</strong></summary>
+<div class="card" style="margin:8px 0 16px">
+<table>
+<thead><tr>
+  <th>Bin</th><th>Recall</th><th>F1</th><th>TP</th><th>FP</th><th>FN</th>
+  <th style="min-width:120px">Bar</th>
+</tr></thead>
+<tbody>
+{% for val, row in tables[table_name].iterrows() %}
+<tr>
+  <td>{{ val }}</td>
+  <td class="{{ rc_class(row.recall) }}">{{ pct(row.recall) }}</td>
+  <td class="{{ rc_class(row.f1) }}">{{ pct(row.f1) }}</td>
+  <td>{{ row.tp|int }}</td><td>{{ row.fp|int }}</td><td>{{ row.fn|int }}</td>
+  <td>{{ bar(row.recall) }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</details>
+{% endif %}
+{% endfor %}
+
+<!-- ── Failure images ──────────────────────────────────────────────────────── -->
+{% if annotated_scenes %}
+<h2>Worst Failure Scenes</h2>
+<p style="color:#64748b;font-size:0.82rem;margin-bottom:12px">
+  Green = TP (detected), Red = FN (missed). FP predictions not shown (require re-inference).
+</p>
+<div class="img-grid">
+{% for scene in annotated_scenes %}
+<div class="img-card">
+  <img src="data:image/png;base64,{{ scene.image_b64 }}" alt="{{ scene.scene_id }}">
+  <div class="img-caption">
+    <strong>{{ scene.scene_id }}</strong><br>
+    {{ scene.fn_count }} missed &nbsp;·&nbsp; {{ scene.fp_count }} false positives
+  </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<!-- ── Baseline comparison ─────────────────────────────────────────────────── -->
+{% if gate_results is not none %}
+<h2>Baseline Comparison (all {{ gate_results|length }} checks)</h2>
+<details>
+<summary>Expand full gate check table</summary>
+<div class="card" style="margin:8px 0 16px">
+<table>
+<thead><tr><th>Slice</th><th>Metric</th><th>Baseline</th><th>Current</th><th>Δ</th><th>Floor / Ceil</th><th>Status</th></tr></thead>
+<tbody>
+{% for r in gate_results %}
+<tr>
+  <td style="font-family:monospace;font-size:0.8rem">{{ r.slice_name }}</td>
+  <td style="font-family:monospace;font-size:0.8rem">{{ r.metric }}</td>
+  <td>{{ "%.4f"|format(r.baseline) }}</td>
+  <td>{{ "%.4f"|format(r.current) }}</td>
+  <td class="{{ 'delta-neg' if r.delta < -0.0001 else ('delta-pos' if r.delta > 0.0001 else 'delta-neu') }}">
+    {{ "%+.4f"|format(r.delta) }}
+  </td>
+  <td style="font-family:monospace;font-size:0.8rem">{{ "%.4f"|format(r.floor) }}</td>
+  <td style="color:{{ '#4ade80' if r.passed else '#f87171' }}">
+    {{ '✓' if r.passed else '✗ FAIL' }}
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</details>
+{% endif %}
+
+<footer>
+  <span>PerceptorGuard — generated {{ date }}</span>
+  <span>model: {{ model_name }} &nbsp;|&nbsp; iou: {{ iou_threshold }}</span>
+</footer>
+
+</div>
+</body>
+</html>
