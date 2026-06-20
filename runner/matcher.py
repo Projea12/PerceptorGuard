@@ -31,6 +31,10 @@ def match_scene(
     Return one record per GT (TP or FN) and one per unmatched prediction (FP).
     Each record carries all GT and prediction fields so rows can be concatenated
     directly into a tidy DataFrame without joins.
+
+    FN rows also include best_iou_any_class and best_pred_class_at_overlap so
+    downstream failure classifiers can distinguish missed vs localisation error
+    vs wrong-class failures.
     """
     ranked = sorted(range(len(preds)), key=lambda i: preds[i].confidence, reverse=True)
     used_gt: set[int] = set()
@@ -62,17 +66,29 @@ def match_scene(
             "gt_class": gt.class_name, "gt_tier": gt.tier, "gt_box_area": gt.box.area,
             "pred_class": pred.class_name, "pred_confidence": pred.confidence,
             "pred_box_area": pred.box.area,
+            "best_iou_any_class": None, "best_pred_class_at_overlap": None,
         })
 
-    # FNs — unmatched GTs
+    # FNs — scan all preds (including matched) to characterise why this GT was missed
     for gi, gt in enumerate(gts):
-        if gi not in used_gt:
-            records.append({
-                "match_type": "fn",
-                "iou": 0.0,
-                "gt_class": gt.class_name, "gt_tier": gt.tier, "gt_box_area": gt.box.area,
-                "pred_class": None, "pred_confidence": None, "pred_box_area": None,
-            })
+        if gi in used_gt:
+            continue
+        best_any, best_cls = 0.0, None
+        best_same = 0.0
+        for pred in preds:
+            v = box_iou(gt.box, pred.box)
+            if v > best_any:
+                best_any = v
+                best_cls = pred.class_name
+            if pred.class_name == gt.class_name and v > best_same:
+                best_same = v
+        records.append({
+            "match_type": "fn",
+            "iou": 0.0,
+            "gt_class": gt.class_name, "gt_tier": gt.tier, "gt_box_area": gt.box.area,
+            "pred_class": None, "pred_confidence": None, "pred_box_area": None,
+            "best_iou_any_class": best_any, "best_pred_class_at_overlap": best_cls,
+        })
 
     # FPs — unmatched predictions
     matched_preds = set(pred_to_gt.keys())
@@ -84,6 +100,7 @@ def match_scene(
                 "gt_class": None, "gt_tier": None, "gt_box_area": None,
                 "pred_class": pred.class_name, "pred_confidence": pred.confidence,
                 "pred_box_area": pred.box.area,
+                "best_iou_any_class": None, "best_pred_class_at_overlap": None,
             })
 
     return records
