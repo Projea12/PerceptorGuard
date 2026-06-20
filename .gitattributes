@@ -1,0 +1,17 @@
+# Git LFS tracking rules for PerceptorGuard
+#
+# Model weights: large binaries that don't diff meaningfully as text.
+# Ground-truth fixtures: rendered PNG frames can exceed 500 KB each.
+# The baseline CSVs are small text files — no LFS needed there.
+
+# YOLO model weights
+*.pt filter=lfs diff=lfs merge=lfs -text
+*.pth filter=lfs diff=lfs merge=lfs -text
+*.onnx filter=lfs diff=lfs merge=lfs -text
+
+# Rendered scene frames (dataset fixtures)
+artifacts/dataset/scenes/**/*.png filter=lfs diff=lfs merge=lfs -text
+artifacts/ci_dataset/scenes/**/*.png filter=lfs diff=lfs merge=lfs -text
+
+# Sample overlays (generated, large)
+samples/*.png filter=lfs diff=lfs merge=lfs -text

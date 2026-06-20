@@ -1,0 +1,4 @@
+clutter_bin,tp,fp,fn,precision,recall,f1,n_scenes
+low (1-3 obj),0,1,15,0.0,0.0,,8
+medium (4-6 obj),0,3,41,0.0,0.0,,9
+high (7+ obj),0,0,20,,0.0,,3

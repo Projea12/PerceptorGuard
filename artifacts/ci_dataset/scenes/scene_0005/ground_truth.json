@@ -1,0 +1,54 @@
+[
+  {
+    "box": {
+      "x_min": 397.16149485699015,
+      "y_min": 125.02624292918529,
+      "x_max": 419.35194309092304,
+      "y_max": 159.2115325578407
+    },
+    "class_id": 1,
+    "class_name": "bottle",
+    "tier": "easy",
+    "scene_id": "scene_0005",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 3.269200694108463,
+      "y_min": 36.204029993460416,
+      "x_max": 284.87710869578575,
+      "y_max": 224.03952232718456
+    },
+    "class_id": 5,
+    "class_name": "cube",
+    "tier": "hard",
+    "scene_id": "scene_0005",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 516.1027310279524,
+      "y_min": 179.0380235618449,
+      "x_max": 550.8826189825295,
+      "y_max": 197.88492220078527
+    },
+    "class_id": 6,
+    "class_name": "duck",
+    "tier": "hard",
+    "scene_id": "scene_0005",
+    "object_id": "3"
+  },
+  {
+    "box": {
+      "x_min": 197.85216096625567,
+      "y_min": 155.16225599256327,
+      "x_max": 224.75237029116911,
+      "y_max": 178.93599104193325
+    },
+    "class_id": 0,
+    "class_name": "cup",
+    "tier": "easy",
+    "scene_id": "scene_0005",
+    "object_id": "4"
+  }
+]

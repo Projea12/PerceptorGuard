@@ -1,0 +1,117 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# PerceptorGuard Nightly Full Suite
+#
+# Runs the complete 100-scene sweep on a schedule.  This is the authoritative
+# quality measurement — CI only runs 20 scenes as a fast regression guard.
+#
+# On success the job promotes the new metrics to artifacts/baseline/ via a
+# dedicated bot commit, so the next PR's CI gate compares against fresh ground.
+#
+# Schedule: 02:00 UTC daily (off-peak for runner availability)
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: Nightly Full Suite
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:   # allow manual trigger
+
+permissions:
+  contents: write     # needed to commit the updated baseline
+
+jobs:
+  full-suite:
+    name: "Full eval (100 scenes)"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull LFS objects
+        run: git lfs pull
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libgl1-mesa-glx libglib2.0-0 libsm6 libxext6
+
+      - name: Install Python deps
+        run: |
+          pip install --upgrade pip
+          pip install \
+            pybullet \
+            torch torchvision --index-url https://download.pytorch.org/whl/cpu \
+            ultralytics \
+            pandas pydantic numpy Pillow \
+            scikit-learn pyyaml
+
+      # ── Generate full dataset ─────────────────────────────────────────────────
+      - name: Generate full dataset (100 scenes, seed=0)
+        run: |
+          python scripts/generate.py \
+            --count 100 --seed 0 \
+            --out artifacts/dataset
+
+      # ── Run full eval ─────────────────────────────────────────────────────────
+      - name: Run full eval
+        run: |
+          python scripts/run_eval.py \
+            --dataset artifacts/dataset \
+            --out     artifacts/eval \
+            --model   yolov8n.pt \
+            --imgsz   640
+
+      # ── Regression gate against stored baseline ───────────────────────────────
+      - name: Regression gate
+        run: |
+          python scripts/run_gate.py \
+            --baseline artifacts/baseline \
+            --current  artifacts/eval \
+            --verbose
+
+      # ── Failure triage ────────────────────────────────────────────────────────
+      - name: Run failure triage
+        run: |
+          python scripts/triage.py \
+            --matches artifacts/eval/matches.csv \
+            --model yolov8n.pt
+
+      # ── Promote new metrics to baseline (only if gate passed) ─────────────────
+      - name: Promote baseline
+        run: |
+          python scripts/save_baseline.py --force
+          python scripts/save_baseline.py \
+            --src artifacts/ci_eval --out artifacts/ci_baseline --force 2>/dev/null || true
+
+      - name: Commit updated baseline
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add artifacts/baseline/ artifacts/ci_baseline/ || true
+          git diff --staged --quiet || \
+            git commit -m "chore: update baseline from nightly run $(date -u +%Y-%m-%d)"
+          git push
+
+      # ── Upload all eval artifacts ─────────────────────────────────────────────
+      - name: Upload eval artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-eval-${{ github.run_number }}
+          path: |
+            artifacts/eval/
+            artifacts/triage/
+          retention-days: 30

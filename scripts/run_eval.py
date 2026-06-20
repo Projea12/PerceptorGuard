@@ -28,11 +28,13 @@ def main() -> None:
                     help="Ultralytics model name or path (default: yolov8n.pt)")
     ap.add_argument("--iou",     type=float, default=0.5,
                     help="IoU match threshold (default: 0.5)")
+    ap.add_argument("--imgsz", type=int, default=640,
+                    help="Inference image size in pixels (default: 640; use 160 for fast CI)")
     ap.add_argument("--no-save", action="store_true",
                     help="Print report only, do not write CSVs")
     args = ap.parse_args()
 
-    runner = EvalRunner(model_name=args.model, iou_threshold=args.iou)
+    runner = EvalRunner(model_name=args.model, iou_threshold=args.iou, imgsz=args.imgsz)
     df = runner.run_dataset(args.dataset)
 
     overall = overall_metrics(df)

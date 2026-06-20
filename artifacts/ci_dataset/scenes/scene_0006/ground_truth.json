@@ -1,0 +1,41 @@
+[
+  {
+    "box": {
+      "x_min": 572.1654775021927,
+      "y_min": 201.46920072633094,
+      "x_max": 617.2404221077211,
+      "y_max": 246.33472051884675
+    },
+    "class_id": 1,
+    "class_name": "bottle",
+    "tier": "easy",
+    "scene_id": "scene_0006",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 153.7721372898573,
+      "y_min": 48.35311510465176,
+      "x_max": 437.3791946527406,
+      "y_max": 300.46483804272543
+    },
+    "class_id": 5,
+    "class_name": "cube",
+    "tier": "hard",
+    "scene_id": "scene_0006",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 172.99229968734662,
+      "y_min": 158.74501777277936,
+      "x_max": 218.6052100564727,
+      "y_max": 189.70207529919105
+    },
+    "class_id": 2,
+    "class_name": "bowl",
+    "tier": "easy",
+    "scene_id": "scene_0006",
+    "object_id": "3"
+  }
+]

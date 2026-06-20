@@ -26,8 +26,8 @@ def _load_gt(path: Path) -> list[GroundTruth]:
     return [GroundTruth(**r) for r in json.loads(path.read_text())]
 
 
-def _predict(model: YOLO, rgb: np.ndarray) -> list[Detection]:
-    results = model(rgb, verbose=False, conf=_INFER_CONF)[0]
+def _predict(model: YOLO, rgb: np.ndarray, imgsz: int = 640) -> list[Detection]:
+    results = model(rgb, verbose=False, conf=_INFER_CONF, imgsz=imgsz)[0]
     dets: list[Detection] = []
     for box in results.boxes:
         xyxy = box.xyxy[0].cpu().numpy()
@@ -67,10 +67,12 @@ class EvalRunner:
         self,
         model_name: str = "yolov8n.pt",
         iou_threshold: float = 0.5,
+        imgsz: int = 640,
     ) -> None:
         print(f"Loading model {model_name}…", flush=True)
         self._model = YOLO(model_name)
         self._iou_threshold = iou_threshold
+        self._imgsz = imgsz
 
     def run_dataset(self, dataset_dir: Path, verbose: bool = True) -> pd.DataFrame:
         manifest = pd.read_csv(dataset_dir / "manifest.csv")
@@ -80,7 +82,7 @@ class EvalRunner:
         for i, (_, mrow) in enumerate(manifest.iterrows()):
             rgb = np.array(Image.open(dataset_dir / mrow["frame_path"]).convert("RGB"))
             gts = _load_gt(dataset_dir / mrow["gt_path"])
-            preds = _predict(self._model, rgb)
+            preds = _predict(self._model, rgb, imgsz=self._imgsz)
             matches = match_scene(gts, preds, self._iou_threshold)
 
             scene_meta = {

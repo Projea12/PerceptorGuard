@@ -1,0 +1,67 @@
+[
+  {
+    "box": {
+      "x_min": 336.7208549362439,
+      "y_min": 6.638939534139796,
+      "x_max": 640.0,
+      "y_max": 396.93939787146087
+    },
+    "class_id": 4,
+    "class_name": "sports ball",
+    "tier": "easy",
+    "scene_id": "scene_0018",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 0.0,
+      "y_min": 0.0,
+      "x_max": 346.7080314352905,
+      "y_max": 275.6998037724195
+    },
+    "class_id": 5,
+    "class_name": "cube",
+    "tier": "hard",
+    "scene_id": "scene_0018",
+    "object_id": "3"
+  },
+  {
+    "box": {
+      "x_min": 362.3551719297115,
+      "y_min": 295.65048745817467,
+      "x_max": 408.04826312461716,
+      "y_max": 339.21463671802024
+    },
+    "class_id": 6,
+    "class_name": "duck",
+    "tier": "hard",
+    "scene_id": "scene_0018",
+    "object_id": "4"
+  },
+  {
+    "box": {
+      "x_min": 448.8903534858656,
+      "y_min": 380.1176464914766,
+      "x_max": 472.8765551058176,
+      "y_max": 401.7538785139381
+    },
+    "class_id": 7,
+    "class_name": "lego",
+    "tier": "hard",
+    "scene_id": "scene_0018",
+    "object_id": "5"
+  },
+  {
+    "box": {
+      "x_min": 225.82265471666182,
+      "y_min": 259.7914313330765,
+      "x_max": 230.26724601488917,
+      "y_max": 273.7250877165314
+    },
+    "class_id": 8,
+    "class_name": "domino",
+    "tier": "hard",
+    "scene_id": "scene_0018",
+    "object_id": "6"
+  }
+]

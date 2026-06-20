@@ -1,0 +1,80 @@
+[
+  {
+    "box": {
+      "x_min": 482.09019037369967,
+      "y_min": 130.91489507932482,
+      "x_max": 640.0,
+      "y_max": 480.0
+    },
+    "class_id": 4,
+    "class_name": "sports ball",
+    "tier": "easy",
+    "scene_id": "scene_0010",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 458.2081099832892,
+      "y_min": 62.35095743330085,
+      "x_max": 640.0,
+      "y_max": 334.30443266490994
+    },
+    "class_id": 5,
+    "class_name": "cube",
+    "tier": "hard",
+    "scene_id": "scene_0010",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 216.44230142367627,
+      "y_min": 146.30853733500803,
+      "x_max": 232.9462037612907,
+      "y_max": 159.74875634513506
+    },
+    "class_id": 6,
+    "class_name": "duck",
+    "tier": "hard",
+    "scene_id": "scene_0010",
+    "object_id": "3"
+  },
+  {
+    "box": {
+      "x_min": 334.14147069906056,
+      "y_min": 45.8469041874734,
+      "x_max": 526.8620328363255,
+      "y_max": 230.19994064296338
+    },
+    "class_id": 4,
+    "class_name": "sports ball",
+    "tier": "easy",
+    "scene_id": "scene_0010",
+    "object_id": "4"
+  },
+  {
+    "box": {
+      "x_min": 266.48394069228124,
+      "y_min": 192.00819735233952,
+      "x_max": 317.50407777876484,
+      "y_max": 228.85467025725694
+    },
+    "class_id": 2,
+    "class_name": "bowl",
+    "tier": "easy",
+    "scene_id": "scene_0010",
+    "object_id": "5"
+  },
+  {
+    "box": {
+      "x_min": 65.7587893768972,
+      "y_min": 192.80687681979654,
+      "x_max": 133.53703175770295,
+      "y_max": 229.0460578829434
+    },
+    "class_id": 2,
+    "class_name": "bowl",
+    "tier": "easy",
+    "scene_id": "scene_0010",
+    "object_id": "6"
+  }
+]

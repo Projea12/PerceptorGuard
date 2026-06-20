@@ -1,0 +1,41 @@
+[
+  {
+    "box": {
+      "x_min": 524.9051458691471,
+      "y_min": 310.737540092497,
+      "x_max": 555.9369907647613,
+      "y_max": 337.9149813890524
+    },
+    "class_id": 3,
+    "class_name": "teddy bear",
+    "tier": "easy",
+    "scene_id": "scene_0015",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 339.2109016252257,
+      "y_min": 35.92464748997674,
+      "x_max": 347.47632946403587,
+      "y_max": 44.373736891380496
+    },
+    "class_id": 7,
+    "class_name": "lego",
+    "tier": "hard",
+    "scene_id": "scene_0015",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 384.92092293474167,
+      "y_min": 46.053689057989814,
+      "x_max": 411.0708462709985,
+      "y_max": 84.85057247422046
+    },
+    "class_id": 1,
+    "class_name": "bottle",
+    "tier": "easy",
+    "scene_id": "scene_0015",
+    "object_id": "3"
+  }
+]

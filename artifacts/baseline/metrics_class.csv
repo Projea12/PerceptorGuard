@@ -1,0 +1,10 @@
+class,tp,fp,fn,precision,recall,f1,n_scenes,ap,tier
+bottle,0,0,44,,0.0,,40,0.0,easy
+bowl,0,0,30,,0.0,,29,0.0,easy
+cube,0,0,45,,0.0,,37,0.0,hard
+cup,0,0,25,,0.0,,24,0.0,easy
+domino,0,0,53,,0.0,,44,0.0,hard
+duck,0,0,47,,0.0,,37,0.0,hard
+lego,0,0,43,,0.0,,32,0.0,hard
+sports ball,0,2,22,0.0,0.0,,31,0.009090909090909092,easy
+teddy bear,0,0,46,,0.0,,42,0.0,easy

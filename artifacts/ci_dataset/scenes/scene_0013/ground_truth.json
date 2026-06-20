@@ -1,0 +1,41 @@
+[
+  {
+    "box": {
+      "x_min": 362.52859393649493,
+      "y_min": 310.41992534339624,
+      "x_max": 432.36983837847174,
+      "y_max": 379.65614009366226
+    },
+    "class_id": 2,
+    "class_name": "bowl",
+    "tier": "easy",
+    "scene_id": "scene_0013",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 344.6128549690768,
+      "y_min": 297.94484374530265,
+      "x_max": 355.81928168336646,
+      "y_max": 313.39722982371904
+    },
+    "class_id": 8,
+    "class_name": "domino",
+    "tier": "hard",
+    "scene_id": "scene_0013",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 344.0562924598408,
+      "y_min": 112.39961407383693,
+      "x_max": 640.0,
+      "y_max": 480.0
+    },
+    "class_id": 5,
+    "class_name": "cube",
+    "tier": "hard",
+    "scene_id": "scene_0013",
+    "object_id": "3"
+  }
+]

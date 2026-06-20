@@ -1,0 +1,7 @@
+profile,tp,fp,fn,precision,recall,f1,n_scenes
+baseline,0,1,11,0.0,0.0,,6
+crowded,0,0,20,,0.0,,3
+dark,0,0,8,,0.0,,3
+far,0,0,14,,0.0,,3
+occluded,0,2,16,0.0,0.0,,3
+steep,0,1,7,0.0,0.0,,2

@@ -1,0 +1,4 @@
+distance_bin,tp,fp,fn,precision,recall,f1,n_scenes
+near (≤3m),0,3,42,0.0,0.0,,14
+mid (3-5m),0,1,20,0.0,0.0,,3
+far (>5m),0,0,14,,0.0,,3

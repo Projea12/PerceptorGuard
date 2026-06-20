@@ -1,0 +1,106 @@
+[
+  {
+    "box": {
+      "x_min": 357.22803987767776,
+      "y_min": 246.40123841479652,
+      "x_max": 393.1784681780156,
+      "y_max": 287.3256282412961
+    },
+    "class_id": 1,
+    "class_name": "bottle",
+    "tier": "easy",
+    "scene_id": "scene_0012",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 294.21448300865296,
+      "y_min": 180.45242826004628,
+      "x_max": 300.41685653289807,
+      "y_max": 185.61177149240302
+    },
+    "class_id": 7,
+    "class_name": "lego",
+    "tier": "hard",
+    "scene_id": "scene_0012",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 409.1458462864835,
+      "y_min": 161.50583738388622,
+      "x_max": 426.66535931798245,
+      "y_max": 187.83217215025226
+    },
+    "class_id": 1,
+    "class_name": "bottle",
+    "tier": "easy",
+    "scene_id": "scene_0012",
+    "object_id": "3"
+  },
+  {
+    "box": {
+      "x_min": 284.2164705132056,
+      "y_min": 155.0494059731519,
+      "x_max": 299.1274805791717,
+      "y_max": 181.02112857724566
+    },
+    "class_id": 1,
+    "class_name": "bottle",
+    "tier": "easy",
+    "scene_id": "scene_0012",
+    "object_id": "4"
+  },
+  {
+    "box": {
+      "x_min": 145.28113961880845,
+      "y_min": 255.5557722080746,
+      "x_max": 169.2352751634091,
+      "y_max": 277.7467299332158
+    },
+    "class_id": 3,
+    "class_name": "teddy bear",
+    "tier": "easy",
+    "scene_id": "scene_0012",
+    "object_id": "5"
+  },
+  {
+    "box": {
+      "x_min": 271.9394666357397,
+      "y_min": 187.664563677204,
+      "x_max": 288.6432926584799,
+      "y_max": 206.19202415490443
+    },
+    "class_id": 0,
+    "class_name": "cup",
+    "tier": "easy",
+    "scene_id": "scene_0012",
+    "object_id": "6"
+  },
+  {
+    "box": {
+      "x_min": 374.0545859501135,
+      "y_min": 89.30296222375951,
+      "x_max": 595.0422921292275,
+      "y_max": 289.0647714281368
+    },
+    "class_id": 5,
+    "class_name": "cube",
+    "tier": "hard",
+    "scene_id": "scene_0012",
+    "object_id": "7"
+  },
+  {
+    "box": {
+      "x_min": 179.2723484122152,
+      "y_min": 180.8570563245686,
+      "x_max": 184.24301496556694,
+      "y_max": 185.30391458061553
+    },
+    "class_id": 7,
+    "class_name": "lego",
+    "tier": "hard",
+    "scene_id": "scene_0012",
+    "object_id": "8"
+  }
+]

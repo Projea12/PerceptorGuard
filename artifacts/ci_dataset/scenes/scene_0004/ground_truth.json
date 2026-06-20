@@ -1,0 +1,67 @@
+[
+  {
+    "box": {
+      "x_min": 240.8635751204824,
+      "y_min": 216.6944616783435,
+      "x_max": 254.01344830865213,
+      "y_max": 227.73723762577748
+    },
+    "class_id": 0,
+    "class_name": "cup",
+    "tier": "easy",
+    "scene_id": "scene_0004",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 310.04660232824176,
+      "y_min": 206.36981174430986,
+      "x_max": 311.8281567977758,
+      "y_max": 209.87202884202298
+    },
+    "class_id": 8,
+    "class_name": "domino",
+    "tier": "hard",
+    "scene_id": "scene_0004",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 356.7520872086388,
+      "y_min": 239.32009912706295,
+      "x_max": 371.4882380170095,
+      "y_max": 252.56052627186864
+    },
+    "class_id": 0,
+    "class_name": "cup",
+    "tier": "easy",
+    "scene_id": "scene_0004",
+    "object_id": "3"
+  },
+  {
+    "box": {
+      "x_min": 272.344017595848,
+      "y_min": 215.27503191788642,
+      "x_max": 285.00444699653764,
+      "y_max": 223.80572606530419
+    },
+    "class_id": 3,
+    "class_name": "teddy bear",
+    "tier": "easy",
+    "scene_id": "scene_0004",
+    "object_id": "4"
+  },
+  {
+    "box": {
+      "x_min": 329.15982506943516,
+      "y_min": 221.37722478399505,
+      "x_max": 340.9804727311525,
+      "y_max": 241.44781619580652
+    },
+    "class_id": 1,
+    "class_name": "bottle",
+    "tier": "easy",
+    "scene_id": "scene_0004",
+    "object_id": "5"
+  }
+]

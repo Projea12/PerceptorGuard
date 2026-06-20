@@ -1,0 +1,15 @@
+[
+  {
+    "box": {
+      "x_min": 538.3168863348127,
+      "y_min": 292.4901492450676,
+      "x_max": 640.0,
+      "y_max": 378.2168716219355
+    },
+    "class_id": 2,
+    "class_name": "bowl",
+    "tier": "easy",
+    "scene_id": "scene_0007",
+    "object_id": "1"
+  }
+]

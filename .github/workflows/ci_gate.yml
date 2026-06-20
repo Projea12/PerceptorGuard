@@ -1,0 +1,99 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# PerceptorGuard CI Regression Gate
+#
+# Runs on every PR to main.  Uses a fast 20-scene synthetic dataset so total
+# wall-clock is ~2 min (scene generation + YOLO inference + gate check).
+#
+# Full 100-scene sweep runs on schedule (see nightly.yml) — that is the
+# authoritative metric source.  The CI gate catches regressions early; it is
+# deliberately not the quality bar you ship against.
+#
+# PLANTED-REGRESSION DEMO
+#   To see the gate go red, open a PR that includes either of:
+#     • run_eval.py --iou 0.9      (raises IoU match threshold → sports-ball AP drops)
+#     • run_eval.py --imgsz 160    (lower resolution → AP degrades)
+#   The gate will fail and name the regressed slices.  Revert → gate goes green.
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: CI Regression Gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: "Fast gate (20 scenes)"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+
+    steps:
+      # ── Checkout with LFS for model weights ──────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Pull LFS objects
+        run: git lfs pull
+
+      # ── Python setup ─────────────────────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install system deps (PyBullet headless)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libgl1-mesa-glx libglib2.0-0 libsm6 libxext6
+
+      - name: Install Python deps
+        run: |
+          pip install --upgrade pip
+          pip install \
+            pybullet \
+            torch torchvision --index-url https://download.pytorch.org/whl/cpu \
+            ultralytics \
+            pandas pydantic numpy Pillow \
+            scikit-learn pyyaml
+
+      # ── Generate 20-scene CI dataset (fixed seed for reproducibility) ─────────
+      - name: Generate CI dataset (20 scenes, seed=42)
+        run: |
+          python scripts/generate.py \
+            --count 20 --seed 42 \
+            --out artifacts/ci_dataset
+
+      # ── Run eval on CI dataset ────────────────────────────────────────────────
+      - name: Run eval
+        run: |
+          python scripts/run_eval.py \
+            --dataset artifacts/ci_dataset \
+            --out artifacts/ci_eval \
+            --model yolov8n.pt \
+            --imgsz 640
+
+      # ── Regression gate ───────────────────────────────────────────────────────
+      # Fails with exit 1 and lists regressed slices if any metric dropped
+      # beyond the thresholds in configs/gate_thresholds.yml.
+      - name: Run regression gate
+        run: |
+          python scripts/run_gate.py \
+            --baseline artifacts/ci_baseline \
+            --current  artifacts/ci_eval \
+            --verbose
+
+      # ── Upload eval artifacts on failure for investigation ────────────────────
+      - name: Upload CI eval on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-eval-${{ github.run_number }}
+          path: artifacts/ci_eval/
+          retention-days: 7

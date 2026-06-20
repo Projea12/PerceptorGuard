@@ -1,0 +1,19 @@
+# PerceptorGuard regression gate thresholds
+#
+# The gate fires when a metric drops below:   baseline_value - slack
+# Hard floors apply regardless of baseline.
+#
+# Tuning guide:
+#   • Tighten map_slack when the model has real AP signal you want to protect.
+#   • Loosen recall_slack for early-stage models where stochastic rendering
+#     causes run-to-run noise.
+#   • fp_slack_frac catches hallucination regressions even when recall is 0%.
+
+recall_slack: 0.02         # max absolute recall drop (pp) before gate fires
+precision_slack: 0.05      # max absolute precision drop (pp)
+map_slack: 0.005           # max absolute mAP / per-class AP drop (pp)
+fp_slack_frac: 0.30        # max fractional FP increase (e.g. 0.30 = +30%)
+
+# Hard floors — gate fires if current value is below floor regardless of baseline
+hard_floor_map: -1.0       # -1 disables; set to e.g. 0.01 to enforce minimum mAP
+hard_floor_recall: -1.0    # -1 disables

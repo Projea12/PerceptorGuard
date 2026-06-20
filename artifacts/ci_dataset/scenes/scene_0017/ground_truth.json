@@ -1,0 +1,41 @@
+[
+  {
+    "box": {
+      "x_min": 527.6126328236188,
+      "y_min": 286.44189780333414,
+      "x_max": 577.7791730331583,
+      "y_max": 328.0882214389112
+    },
+    "class_id": 0,
+    "class_name": "cup",
+    "tier": "easy",
+    "scene_id": "scene_0017",
+    "object_id": "1"
+  },
+  {
+    "box": {
+      "x_min": 205.8869050322865,
+      "y_min": 94.68919723899842,
+      "x_max": 209.01262611110064,
+      "y_max": 101.63781884500429
+    },
+    "class_id": 8,
+    "class_name": "domino",
+    "tier": "hard",
+    "scene_id": "scene_0017",
+    "object_id": "2"
+  },
+  {
+    "box": {
+      "x_min": 401.479050069934,
+      "y_min": 299.5798016618023,
+      "x_max": 429.3306830758499,
+      "y_max": 331.47821083142674
+    },
+    "class_id": 6,
+    "class_name": "duck",
+    "tier": "hard",
+    "scene_id": "scene_0017",
+    "object_id": "3"
+  }
+]

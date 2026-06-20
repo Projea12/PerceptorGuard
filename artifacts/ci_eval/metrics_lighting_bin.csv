@@ -1,0 +1,4 @@
+lighting_bin,tp,fp,fn,precision,recall,f1,n_scenes
+dark (≤0.25),0,0,8,,0.0,,3
+normal (0.25-0.7),0,0,27,,0.0,,7
+bright (>0.7),0,4,41,0.0,0.0,,10
