@@ -1,4 +1,4 @@
-from typing import Literal
+import math
 from pydantic import BaseModel, Field
 
 
@@ -13,6 +13,14 @@ class BoundingBox(BaseModel):
         return max(0.0, self.x_max - self.x_min) * max(0.0, self.y_max - self.y_min)
 
 
+class ObjectSpec(BaseModel):
+    urdf: str
+    class_id: int
+    class_name: str
+    position: tuple[float, float, float]
+    orientation_euler: tuple[float, float, float] = (0.0, 0.0, 0.0)
+
+
 class Scenario(BaseModel):
     scene_id: str
     description: str = ""
@@ -22,9 +30,10 @@ class Scenario(BaseModel):
     camera_distance: float = Field(default=2.5, gt=0.0)
     camera_pitch: float = Field(default=-30.0)
     camera_yaw: float = Field(default=50.0)
-    objects: list[str] = Field(default_factory=list)
+    camera_target: tuple[float, float, float] = (0.0, 0.0, 0.0)
     ambient_light: float = Field(default=0.8, ge=0.0, le=1.0)
     shadow: bool = True
+    object_specs: list[ObjectSpec] = Field(default_factory=list)
 
 
 class Detection(BaseModel):
