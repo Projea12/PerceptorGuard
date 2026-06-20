@@ -1,0 +1,2 @@
+tp,fp,fn,precision,recall,f1,n_scenes,map
+0,27,355,0.0,0.0,,100,0.0010101010101010103
