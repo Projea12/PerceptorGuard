@@ -23,6 +23,25 @@ def test_all_profiles_represented():
     assert profiles == expected
 
 
+def test_both_tiers_present_per_scene():
+    cfg = GeneratorConfig(n=50, seed=42)
+    scenarios = ScenarioGenerator(cfg).generate()
+    multi = [s for s in scenarios if len(s.object_specs) >= 2]
+    for s in multi:
+        tiers = {spec.tier for spec in s.object_specs if spec.tier != "clutter"}
+        assert "easy" in tiers and "hard" in tiers, f"{s.scene_id} missing a tier: {tiers}"
+
+
+def test_easy_tier_class_names_are_coco():
+    coco_names = {"cup", "bottle", "bowl", "teddy bear", "sports ball"}
+    cfg = GeneratorConfig(n=50, seed=1)
+    scenarios = ScenarioGenerator(cfg).generate()
+    for s in scenarios:
+        for spec in s.object_specs:
+            if spec.tier == "easy":
+                assert spec.class_name in coco_names, f"Unexpected easy name: {spec.class_name}"
+
+
 def test_dark_profile_low_ambient():
     cfg = GeneratorConfig(n=100, seed=42)
     scenarios = ScenarioGenerator(cfg).generate()

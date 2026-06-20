@@ -17,6 +17,7 @@ class ObjectSpec(BaseModel):
     urdf: str
     class_id: int
     class_name: str
+    tier: str = "easy"   # "easy" | "hard" | "clutter"
     position: tuple[float, float, float]
     orientation_euler: tuple[float, float, float] = (0.0, 0.0, 0.0)
 
@@ -48,5 +49,6 @@ class GroundTruth(BaseModel):
     box: BoundingBox
     class_id: int
     class_name: str
+    tier: str = "easy"   # "easy" | "hard" | "clutter"
     scene_id: str
     object_id: str = ""

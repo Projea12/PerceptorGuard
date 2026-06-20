@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pybullet as pb
 import pybullet_data
@@ -8,6 +10,18 @@ from runner.gt_extractor import project_aabb_to_screen
 from scenarios.schemas import GroundTruth, Scenario
 
 _SETTLE_STEPS = 60
+_REPO_ROOT = Path(__file__).parent.parent
+
+
+def _resolve_urdf(urdf: str) -> str:
+    """Absolute paths pass through; repo-relative paths (e.g. assets/) are resolved."""
+    p = Path(urdf)
+    if p.is_absolute():
+        return urdf
+    repo_path = _REPO_ROOT / p
+    if repo_path.exists():
+        return str(repo_path)
+    return urdf  # let pybullet find it via setAdditionalSearchPath
 
 
 class SceneRunner:
@@ -20,8 +34,6 @@ class SceneRunner:
         finally:
             pb.disconnect(client)
 
-    # ── internals ─────────────────────────────────────────────────────────────
-
     def _run(self, client: int, scenario: Scenario) -> tuple[np.ndarray, list[GroundTruth]]:
         pb.setAdditionalSearchPath(pybullet_data.getDataPath(), physicsClientId=client)
         pb.setGravity(0, 0, -9.81, physicsClientId=client)
@@ -31,7 +43,7 @@ class SceneRunner:
         for spec in scenario.object_specs:
             try:
                 bid = pb.loadURDF(
-                    spec.urdf,
+                    _resolve_urdf(spec.urdf),
                     basePosition=list(spec.position),
                     baseOrientation=pb.getQuaternionFromEuler(list(spec.orientation_euler)),
                     physicsClientId=client,
@@ -60,7 +72,6 @@ class SceneRunner:
             physicsClientId=client,
         )
 
-        # lightDiffuseCoeff complementary to ambient so total stays ≤ 1
         _, _, rgba, _, _ = pb.getCameraImage(
             width=scenario.image_width,
             height=scenario.image_height,
@@ -75,6 +86,8 @@ class SceneRunner:
 
         ground_truths: list[GroundTruth] = []
         for spec, bid in loaded:
+            if spec.tier == "clutter":
+                continue  # clutter is scene noise, not a detection target
             try:
                 aabb_min, aabb_max = pb.getAABB(bid, physicsClientId=client)
             except Exception:
@@ -88,6 +101,7 @@ class SceneRunner:
                     box=box,
                     class_id=spec.class_id,
                     class_name=spec.class_name,
+                    tier=spec.tier,
                     scene_id=scenario.scene_id,
                     object_id=str(bid),
                 ))
