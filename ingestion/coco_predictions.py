@@ -24,13 +24,18 @@ def load_coco_predictions(
     path: Path,
     categories: dict[int, str],
     filename_by_id: dict[int, str],
+    pred_categories: dict[int, str] | None = None,
 ) -> dict[str, list[Detection]]:
     """Load a COCO results JSON file and return detections indexed by filename.
 
     Args:
         path: Path to the COCO results JSON file (array of prediction dicts).
         categories: Mapping of category_id -> class_name (from CocoGTDataset).
+            Used when pred_categories is None (standard same-vocabulary eval).
         filename_by_id: Mapping of image_id -> file_name (from CocoGTDataset).
+        pred_categories: Optional separate category mapping for the model's output.
+            Pass this when the model uses different category IDs than the GT
+            (e.g. evaluating a COCO-pretrained model on custom-labeled data).
 
     Returns:
         Dict mapping file_name -> list[Detection], sorted by confidence descending.
@@ -51,6 +56,8 @@ def load_coco_predictions(
             "Did you pass an annotations file instead of a results file?"
         )
 
+    cat_lookup = pred_categories if pred_categories is not None else categories
+
     preds_by_filename: dict[str, list[Detection]] = {}
     skipped_unknown_image = 0
     skipped_unknown_category = 0
@@ -64,7 +71,7 @@ def load_coco_predictions(
             continue
 
         cid = int(pred["category_id"])
-        if cid not in categories:
+        if cid not in cat_lookup:
             skipped_unknown_category += 1
             continue
 
@@ -86,7 +93,7 @@ def load_coco_predictions(
         det = Detection(
             box=BoundingBox(x_min=x, y_min=y, x_max=x + w, y_max=y + h),
             class_id=cid,
-            class_name=categories[cid],
+            class_name=cat_lookup[cid],
             confidence=score,
             frame_id=fname,
         )

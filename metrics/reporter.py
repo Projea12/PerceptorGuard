@@ -30,8 +30,8 @@ def print_report(
     df: pd.DataFrame,
     tables: dict[str, pd.DataFrame],
     overall: dict,
-    model_name: str,
-    iou_threshold: float,
+    model_name: str = "",
+    iou_threshold: float = 0.5,
     op_conf: float = 0.25,
 ) -> None:
     n_scenes = df["scene_id"].nunique()
@@ -39,7 +39,8 @@ def print_report(
 
     print("═" * _W)
     print(f"  PerceptorGuard Eval Report")
-    print(f"  model={model_name}  |  scenes={n_scenes}  |  GT objects={n_gt}")
+    model_line = f"model={model_name}  |  " if model_name else ""
+    print(f"  {model_line}scenes={n_scenes}  |  GT objects={n_gt}")
     print(f"  IoU threshold={iou_threshold}  |  operating-point conf≥{op_conf}")
     print("═" * _W)
 
@@ -91,6 +92,16 @@ def print_report(
             print(f"  {str(val):<24}  {_pct(row.recall):>7}  {_pct(row.f1):>6}  "
                   f"[{_bar(row.recall)}]  {row.tp:>5}  {row.fp:>5}  {row.fn:>5}")
 
+    # ── Object size ────────────────────────────────────────────────────────────
+    if "size_bin" in tables:
+        t = tables["size_bin"]
+        print(f"\n  BY OBJECT SIZE (bbox area / image area)")
+        print(f"  {'bin':<10}  {'Recall':>7}  {'F1':>6}  bar (recall)  "
+              f"{'TP':>5}  {'FP':>5}  {'FN':>5}")
+        for val, row in t.iterrows():
+            print(f"  {str(val):<10}  {_pct(row.recall):>7}  {_pct(row.f1):>6}  "
+                  f"[{_bar(row.recall)}]  {row.tp:>5}  {row.fp:>5}  {row.fn:>5}")
+
     # ── Clutter ────────────────────────────────────────────────────────────────
     if "clutter_bin" in tables:
         t = tables["clutter_bin"]
@@ -112,6 +123,19 @@ def print_report(
             print(f"  {str(cls):<14}  {tier_tag:<6}  {_pct(row.recall):>7}  "
                   f"{_pct(row.ap):>7}  {row.tp:>5}  {row.fp:>5}  {row.fn:>5}  "
                   f"[{_bar(row.recall)}]")
+
+    # ── Extra metadata dimensions ──────────────────────────────────────────────
+    _known = {"profile", "distance_bin", "lighting_bin", "clutter_bin",
+              "size_bin", "gt_tier", "class"}
+    for dim, t in tables.items():
+        if dim in _known:
+            continue
+        print(f"\n  BY {dim.upper().replace('_', ' ')}")
+        print(f"  {dim:<20}  {'Recall':>7}  {'F1':>6}  bar (recall)  "
+              f"{'TP':>5}  {'FP':>5}  {'FN':>5}")
+        for val, row in t.iterrows():
+            print(f"  {str(val):<20}  {_pct(row.recall):>7}  {_pct(row.f1):>6}  "
+                  f"[{_bar(row.recall)}]  {row.tp:>5}  {row.fp:>5}  {row.fn:>5}")
 
     print("\n" + "═" * _W)
 

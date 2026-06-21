@@ -81,11 +81,16 @@ def overall_metrics(df: pd.DataFrame) -> dict:
     return m
 
 
-def sliced_tables(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+def sliced_tables(
+    df: pd.DataFrame,
+    extra_dims: list[str] | None = None,
+) -> dict[str, pd.DataFrame]:
     tables: dict[str, pd.DataFrame] = {}
 
-    # Dimension slices
-    for dim in ("profile", "distance_bin", "lighting_bin", "clutter_bin"):
+    # Dimension slices — core + auto-inferred + caller-supplied metadata columns
+    base_dims = ("profile", "distance_bin", "lighting_bin", "clutter_bin", "size_bin")
+    all_dims = list(base_dims) + (extra_dims or [])
+    for dim in all_dims:
         if dim not in df.columns:
             continue
         rows = []

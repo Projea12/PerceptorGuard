@@ -21,7 +21,10 @@ if str(_ROOT) not in sys.path:
 
 
 def _cmd_eval(args: argparse.Namespace) -> int:
-    from scripts.run_eval import main as _main
+    if args.gt is not None:
+        from scripts.run_coco_eval import main as _main
+    else:
+        from scripts.run_eval import main as _main
     sys.argv = ["perceptorguard eval"] + _forward(args)
     _main()
     return 0
@@ -83,11 +86,26 @@ def main() -> None:
 
     # ── eval ──────────────────────────────────────────────────────────────────
     p_eval = sub.add_parser("eval", help="Run evaluation against a dataset")
+    # COCO mode (--gt + --preds)
+    p_eval.add_argument("--gt",      type=Path, default=None,
+                        help="COCO annotations JSON (ground truth labels)")
+    p_eval.add_argument("--preds",   type=Path, default=None,
+                        help="COCO results JSON (model predictions array)")
+    p_eval.add_argument("--images",  type=Path, default=None,
+                        help="Image directory — enables lighting slice")
+    p_eval.add_argument("--metadata", type=Path, default=None,
+                        help="Optional per-image metadata CSV")
+    p_eval.add_argument("--pred-classes", type=Path, default=None,
+                        help="Model category vocabulary JSON for cross-vocabulary eval")
+    p_eval.add_argument("--class-map", type=Path,
+                        default=Path("configs/class_map.yml"))
+    # Synthetic mode (--dataset)
     p_eval.add_argument("--dataset", type=Path, default=Path("artifacts/dataset"))
-    p_eval.add_argument("--out",     type=Path, default=Path("artifacts/eval"))
     p_eval.add_argument("--model",   default="yolov8n.pt")
-    p_eval.add_argument("--iou",     type=float, default=0.5)
     p_eval.add_argument("--imgsz",   type=int,   default=640)
+    # Shared
+    p_eval.add_argument("--out",     type=Path, default=Path("artifacts/eval"))
+    p_eval.add_argument("--iou",     type=float, default=0.5)
     p_eval.add_argument("--no-save", action="store_true")
 
     # ── report ────────────────────────────────────────────────────────────────
