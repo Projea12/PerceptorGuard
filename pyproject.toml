@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "perceptorguard"
-version = "0.1.0"
+version = "0.1.1"
 description = "Perception model evaluation harness — sliced metrics, failure triage, and CI regression gating for detection models"
 readme = "README.md"
 license = { text = "MIT" }

@@ -76,7 +76,7 @@ def main() -> None:
                     help="IoU match threshold (default: 0.5)")
     ap.add_argument("--no-save", action="store_true",
                     help="Print report only, do not write CSVs")
-    args = ap.parse_args()
+    args, _ = ap.parse_known_args()  # ignore synthetic-mode flags forwarded by CLI
 
     # ── 1. Load ground truth ──────────────────────────────────────────────────
     print(f"Loading GT: {args.gt}")
