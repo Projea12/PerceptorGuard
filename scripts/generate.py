@@ -17,11 +17,17 @@ import numpy as np
 import pandas as pd
 from PIL import Image, ImageDraw
 
-# Make repo root importable when running as a script
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from scenarios.generator import GeneratorConfig, ScenarioGenerator
-from runner.scene_runner import SceneRunner
+try:
+    from scenarios.generator import GeneratorConfig, ScenarioGenerator
+    from runner.scene_runner import SceneRunner
+except ImportError:
+    print(
+        "ERROR: synthetic data generation requires the [synthetic] extras.\n"
+        "Install with:  pip install 'perceptorguard[synthetic]'"
+    )
+    sys.exit(1)
 
 # Distinct colors per class (index = class_id % len)
 _PALETTE = [

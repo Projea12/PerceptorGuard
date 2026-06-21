@@ -3,8 +3,15 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-import pybullet as pb
-import pybullet_data
+
+try:
+    import pybullet as pb
+    import pybullet_data
+except ImportError:
+    raise ImportError(
+        "PyBullet is required for synthetic scene rendering.\n"
+        "Install it with:  pip install 'perceptorguard[synthetic]'"
+    )
 
 from runner.gt_extractor import project_aabb_to_screen
 from scenarios.schemas import GroundTruth, Scenario
