@@ -13,9 +13,7 @@
 name: Nightly Full Suite
 
 on:
-  schedule:
-    - cron: "0 2 * * *"
-  workflow_dispatch:   # allow manual trigger
+  workflow_dispatch:   # manual trigger only — nightly schedule disabled until synthetic infra is ready
 
 permissions:
   contents: write     # needed to commit the updated baseline
