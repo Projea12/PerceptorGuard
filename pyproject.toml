@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "perceptorguard"
-version = "0.1.1"
+version = "0.1.2"
 description = "Perception model evaluation harness — sliced metrics, failure triage, and CI regression gating for detection models"
 readme = "README.md"
 license = { text = "MIT" }
+authors = [{ name = "John Olugbemi", email = "johnjesuyon68@gmail.com" }]
 requires-python = ">=3.11"
 keywords = ["object-detection", "evaluation", "metrics", "yolo", "coco", "perception", "robotics"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -31,8 +32,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-org/perceptorguard"
-"Bug Tracker" = "https://github.com/your-org/perceptorguard/issues"
+Homepage = "https://github.com/Projea12/PerceptorGuard"
+"Bug Tracker" = "https://github.com/Projea12/PerceptorGuard/issues"
 
 [project.optional-dependencies]
 synthetic = [

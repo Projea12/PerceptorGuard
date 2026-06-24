@@ -30,6 +30,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from ingestion.coco_gt import load_coco_gt
 from ingestion.coco_predictions import load_coco_predictions
 from ingestion.class_map import load_or_create
+from ingestion.exceptions import EvalInputError
+from ingestion.validator import validate_eval_inputs, format_audit_trail
 from ingestion.metadata_csv import (
     load_metadata_csv,
     enrich_matches_with_metadata,
@@ -51,7 +53,7 @@ def _load_pred_categories(path: Path) -> dict[int, str]:
     return {int(item["id"]): item["name"] for item in raw}
 
 
-def main() -> None:
+def _run() -> None:
     ap = argparse.ArgumentParser(
         description="PerceptorGuard COCO eval — sliced metrics from your labels and predictions"
     )
@@ -102,7 +104,15 @@ def main() -> None:
     total_preds = sum(len(v) for v in preds_by_filename.values())
     print(f"  {total_preds} predictions across {len(preds_by_filename)} images")
 
-    # ── 3. Class mapping ──────────────────────────────────────────────────────
+    # ── 3. Validate inputs before any matching ────────────────────────────────
+    try:
+        summary = validate_eval_inputs(gt_ds, preds_by_filename, args.images)
+    except EvalInputError as exc:
+        print(f"\nERROR: {exc}\n", file=sys.stderr)
+        sys.exit(2)
+    print(format_audit_trail(summary, args.images))
+
+    # ── 4. Class mapping ──────────────────────────────────────────────────────
     user_classes = set(gt_ds.categories.values())
     model_classes = (
         set(pred_categories.values()) if pred_categories else user_classes
@@ -111,7 +121,7 @@ def main() -> None:
     class_map = load_or_create(user_classes, model_classes, args.class_map)
     gts_by_filename = class_map.apply_to_gts(gt_ds.gts_by_filename)
 
-    # ── 4. Match scene by scene ───────────────────────────────────────────────
+    # ── 5. Match scene by scene ───────────────────────────────────────────────
     print(f"Matching (IoU≥{args.iou}) ...")
     all_records: list[dict] = []
     all_filenames = sorted(set(gts_by_filename) | set(preds_by_filename))
@@ -153,6 +163,14 @@ def main() -> None:
 
     if not args.no_save:
         save_tables(df, tables, overall, args.out)
+
+
+def main() -> None:
+    try:
+        _run()
+    except EvalInputError as exc:
+        print(f"\nERROR: {exc}\n", file=sys.stderr)
+        sys.exit(2)
 
 
 if __name__ == "__main__":

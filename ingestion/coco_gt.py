@@ -21,9 +21,10 @@ from scenarios.schemas import BoundingBox, GroundTruth
 @dataclass
 class CocoGTDataset:
     gts_by_filename: dict[str, list[GroundTruth]]
-    categories: dict[int, str]          # category_id -> class_name
-    filename_by_id: dict[int, str]      # image_id -> filename
+    categories: dict[int, str]               # category_id -> class_name
+    filename_by_id: dict[int, str]           # image_id -> filename
     image_sizes: dict[str, tuple[int, int]]  # filename -> (width, height)
+    duplicate_image_ids: set[int] = field(default_factory=set)
 
 
 def load_coco_gt(path: Path, tier: str = "user") -> CocoGTDataset:
@@ -61,10 +62,16 @@ def load_coco_gt(path: Path, tier: str = "user") -> CocoGTDataset:
 
     filename_by_id: dict[int, str] = {}
     image_sizes: dict[str, tuple[int, int]] = {}
+    duplicate_image_ids: set[int] = set()
+    _seen_ids: set[int] = set()
     for img in raw["images"]:
         iid = int(img["id"])
         fname = img["file_name"]
-        filename_by_id[iid] = fname
+        if iid in _seen_ids:
+            duplicate_image_ids.add(iid)
+        else:
+            _seen_ids.add(iid)
+            filename_by_id[iid] = fname
         if "width" in img and "height" in img:
             image_sizes[fname] = (int(img["width"]), int(img["height"]))
 
@@ -120,4 +127,5 @@ def load_coco_gt(path: Path, tier: str = "user") -> CocoGTDataset:
         categories=categories,
         filename_by_id=filename_by_id,
         image_sizes=image_sizes,
+        duplicate_image_ids=duplicate_image_ids,
     )
